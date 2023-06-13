@@ -6,7 +6,7 @@
   <link href="https://longlongawy.github.io/atom.xml" rel="self"/>
   
   <link href="https://longlongawy.github.io/"/>
-  <updated>2023-06-13T14:15:04.855Z</updated>
+  <updated>2023-06-13T21:36:32.881Z</updated>
   <id>https://longlongawy.github.io/</id>
   
   <author>
@@ -15,6 +15,23 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Wireguard官方PC客户端添加国内IP/域名分流功能</title>
+    <link href="https://longlongawy.github.io/posts/c5d85544.html"/>
+    <id>https://longlongawy.github.io/posts/c5d85544.html</id>
+    <published>2023-06-13T21:19:33.000Z</published>
+    <updated>2023-06-13T21:36:32.881Z</updated>
+    
+    <content type="html"><![CDATA[<p>#1.分流原理<br>目前项目采用的分流方式主要是：</p><p>1:路由表分流。通过将国内/大陆IP与默认网卡进行绑定，让国内的IP都走默认网卡（你的默认网络）。其余国外IP走虚拟网卡（你的代理网络）<br>2:DNS分流。通过配置overture，将国内/大陆IP和一些常用的国内域名与国内的DNS进行绑定，其余国外IP与国外DNS绑定，进一步加强分流的准确性。因为某些国内的网站或服务会部署海外CDN，当使用海外的DNS解析这些域名时，将会得到海外CDN的IP地址，此时虽然访问的是国内的网站或服务，但由于解析得到的是一个海外IP，因此流量仍会经过代理。</p><p>#2.操作方法</p><ol><li>下载并安装最新版本的官方PC客户端。一般会安装在目录”C:\Program Files\WireGuard”</li><li>开启Wireguard的Pre/Post命令支持，只能通过修改注册表的方式开启，具体操作：<br>以管理员身份运行cmd<br>输入以下命令按回车</li></ol><figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># CMD命令行</span></span><br><span class="line">reg <span class="keyword">add</span><span class="language-bash"> HKLM\Software\WireGuard /v DangerousScriptExecution /t REG_DWORD /d 1 /f</span></span><br></pre></td></tr></table></figure><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="section"># 本地图片</span></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">&quot;/img/wrieguard.jpg&quot;</span> <span class="attr">alt</span>=<span class="string">&quot;示例图片&quot;</span> <span class="attr">style</span>=<span class="string">&quot;zoom:50%;&quot;</span> /&gt;</span></span></span><br></pre></td></tr></table></figure><ol start="3"><li>下载<div class="note info flat"><p><a href="https://github.com/lmc999/auto-add-routes/tree/master/wireguard">此页面</a></p></div>中的所有文件到”C:\Program Files\WireGuard\bat”。或者直接下载解压<div class="note info flat"><p><a href="https://github.com/lmc999/auto-add-routes/blob/master/zip/wireguard.zip">此压缩文档</a></p></div></li></ol><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="section"># 本地图片</span></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">&quot;/img/wrieguard2.jpg&quot;</span> <span class="attr">alt</span>=<span class="string">&quot;示例图片&quot;</span> <span class="attr">style</span>=<span class="string">&quot;zoom:50%;&quot;</span> /&gt;</span></span></span><br></pre></td></tr></table></figure><ol start="4"><li>修改Wireguard客户端配置文件，加入以下Script Hook调用”C:\Program Files\WireGuard\bat”的批处理文件<br>PreUp = “C:\Program Files\WireGuard\bat\routes-up.bat”<br>PostUp = “C:\Program Files\WireGuard\bat\dns-up.bat”<br>PreDown = “C:\Program Files\WireGuard\bat\routes-down.bat”<br>PostDown = “C:\Program Files\WireGuard\bat\dns-down.bat”</li></ol><p>将DNS指向本机以使用Overture作为DNS服务器<br>DNS = 127.0.0.1</p><p>关闭Wireguard的kill switch并保存修改</p><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="section"># 本地图片</span></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">&quot;/img/wrieguard3.jpg&quot;</span> <span class="attr">alt</span>=<span class="string">&quot;示例图片&quot;</span> <span class="attr">style</span>=<span class="string">&quot;zoom:50%;&quot;</span> /&gt;</span></span></span><br></pre></td></tr></table></figure><ol start="5"><li>如配置正确，此时点击连接Wireguard会⑴自动调用routes-up.bat将国内IP写进系统路由表，⑵启动overture DNS服务器</li><li>连接成功后可上<div class="note info flat"><p><a href="https://ip.skk.moe/">ip.skk.moe</a></p></div>测试一下看是否正确分流。</li></ol>]]></content>
+    
+    
+    <summary type="html">此文将介绍如何开启官方客户端的脚本功能并利用此功能在Wireguard建立连接时对国内IP及域名进行分流</summary>
+    
+    
+    
+    
+  </entry>
   
   <entry>
     <title>一键部署WireGuard</title>
